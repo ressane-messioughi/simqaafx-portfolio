@@ -6,7 +6,7 @@
  */
 
 export const site = {
-  name: 'SimOaaFX',
+  name: 'SimQaaFX',
   tagline: 'Créateur de contenus RP & éditeur vidéo.',
   description:
     'Créateur de contenus RP et éditeur vidéo. Découvrez mes réalisations à travers divers projets immersifs et créatifs.',
@@ -61,6 +61,6 @@ export const footer = {
     { network: 'instagram', url: null },
     { network: 'mail', url: null },
   ],
-  copyright: `© ${new Date().getFullYear()} SimOaaFX. Tous droits réservés.`,
+  copyright: `© ${new Date().getFullYear()} SimQaaFX. Tous droits réservés.`,
   signature: 'Fait avec passion',
 };

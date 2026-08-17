@@ -19,7 +19,7 @@ export const homeSections = [
     properties: {
       eyebrow: 'MON PORTFOLIO',
       title: 'Bienvenue sur',
-      titleGradient: 'SimOaaFX !',
+      titleGradient: 'SimQaaFX !',
       text: 'Créateur de contenus RP & éditeur vidéo. Découvrez mes réalisations à travers divers projets immersifs et créatifs.',
       image: '/img/hero.png',
       buttons: [

@@ -1,4 +1,4 @@
-# SimOaaFX — Portfolio
+# SimQaaFX — Portfolio
 
 Site vitrine d'un créateur de contenus RP et éditeur vidéo.
 **React 19 + Vite + Tailwind CSS v4**, sans backend ni API.
@@ -49,14 +49,14 @@ npm run dev      # http://localhost:5173
 
 ```bash
 npm run build
-scp -r dist/* user@mon-vps:/var/www/simoaafx/
+scp -r dist/* user@mon-vps:/var/www/simqaafx/
 ```
 
 ```nginx
 server {
     listen 80;
-    server_name simoaafx.fr;
-    root /var/www/simoaafx;
+    server_name simqaafx.fr;
+    root /var/www/simqaafx;
     index index.html;
 
     # ESSENTIEL pour une application à page unique : toute URL inconnue
@@ -163,10 +163,12 @@ violet → bleu (`.text-gradient` et `.bg-gradient-accent`).
 - [ ] **`public/img/hero.png`** et **`public/img/logo.png`** — extraits de la
       maquette en résolution 1×, donc un peu doux sur écran retina. À remplacer
       par les fichiers sources.
-- [ ] **Orthographe du nom** — la maquette écrit « SimOaaFX », l'ancien thème
-      écrivait « SimQaaFX ». C'est la graphie de la maquette qui a été retenue.
 - [ ] **Chiffres de la section statistiques** — « 3+ années » et « 100% passion »
       viennent de la maquette ; « +30 vidéos » est calculé automatiquement.
+- [x] **Orthographe du nom** — c'est bien « SimQaaFX », avec un Q. La maquette
+      de référence l'orthographiait « SimOaaFX » : c'était une coquille.
+      Attention, le visuel `hero.png` en est extrait et porte encore la
+      mauvaise graphie sur le sweat — il faudra le régénérer.
 
 ---
 
