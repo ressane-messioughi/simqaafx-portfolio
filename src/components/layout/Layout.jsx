@@ -1,70 +1,48 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
-import ThemeStyles from './ThemeStyles';
-import ParticlesBackground from './ParticlesBackground';
-import Announcement from './Announcement';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
 /**
- * Gabarit commun à toutes les pages — transposition de layouts/master.njk.
+ * Gabarit commun à toutes les pages.
  *
- * ── LE POINT IMPORTANT : UN SEUL <main> ──────────────────────────────────
- *
- * La règle HTML est stricte : un document ne doit contenir qu'un seul <main>,
- * qui délimite le contenu principal, hors en-tête et pied de page. En avoir
- * plusieurs casse la navigation des lecteurs d'écran et c'est une erreur que
- * les validateurs signalent.
- *
- * Le <main> est donc déclaré ICI, une fois pour toutes. Les pages ne
- * fournissent que leur contenu et ne doivent JAMAIS déclarer leur propre
- * <main> — c'est exactement le piège à éviter.
+ * ── UN SEUL <main> ───────────────────────────────────────────────────────
+ * Un document HTML ne doit contenir qu'un seul <main>, qui délimite le
+ * contenu principal hors en-tête et pied de page. Il est donc déclaré ici,
+ * une fois pour toutes, et les pages ne fournissent que leur contenu.
  *
  * <Outlet /> est l'emplacement où React Router injecte la page courante.
- * C'est l'équivalent de `{{ templateContent | safe }}` en Nunjucks.
  */
 function Layout() {
   const { pathname } = useLocation();
 
-  // Sans ça, changer de page conserve la position de défilement : on
-  // arriverait au milieu de la nouvelle page. Le navigateur le fait
-  // naturellement sur un site classique, mais pas dans une SPA.
+  // Dans une application à page unique, changer de route ne remet pas le
+  // défilement en haut : on arriverait au milieu de la nouvelle page.
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   return (
-    <>
-      <ThemeStyles />
-      <ParticlesBackground />
-
-      {/* Lien d'évitement : premier élément focalisable de la page, il permet
-          à un utilisateur au clavier de sauter le menu. Invisible tant qu'il
-          n'a pas le focus. C'est un critère RGAA. */}
+    <div className="flex min-h-screen flex-col">
+      {/* Lien d'évitement : premier élément atteignable au clavier, il permet
+          de sauter la navigation. Invisible tant qu'il n'a pas le focus.
+          C'est un critère RGAA. */}
       <a
         href="#contenu"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-accent-500 focus:text-t-primary focus:px-4 focus:py-2"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-gradient-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
       >
         Aller au contenu principal
       </a>
 
-      <div className="relative">
-        <Announcement />
+      <Navbar />
 
-        <div className="flex flex-col justify-between max-w-[85rem] min-h-screen mx-auto p-4 relative md:p-6 lg:p-8">
-          <div>
-            <Navbar />
+      <main id="contenu" className="mx-auto w-full max-w-6xl flex-1 px-5 lg:px-8">
+        <Outlet />
+      </main>
 
-            <main id="contenu">
-              <Outlet />
-            </main>
-          </div>
-
-          <Footer />
-        </div>
-      </div>
-    </>
+      <Footer />
+    </div>
   );
 }
 

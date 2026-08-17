@@ -1,76 +1,111 @@
 @import 'tailwindcss';
 
 /*
- * Système de couleurs du thème.
- *
- * Ces variables sont les valeurs par défaut : le composant <ThemeStyles />
- * les réécrit à l'exécution à partir de src/data/settings.js. C'est ce qui
- * permet de changer toute la charte du site en modifiant une seule ligne,
- * exactement comme les "options" du thème d'origine.
- *
- * Format « R G B » (sans rgb()) pour pouvoir appliquer une opacité :
- * bg-card/75, text-t-primary/80, etc.
+ * Palette relevée directement sur la maquette (content.png), pixel par pixel,
+ * plutôt qu'estimée à l'œil. Chaque valeur ci-dessous est une couleur réelle
+ * échantillonnée dans l'image de référence.
  */
 :root {
-  --cl-accent: 101 113 255;
-  --cl-background: 6 6 12;
-  --cl-card: 11 11 17;
-  --cl-t-primary: 255 255 255;
-  --cl-t-accent: 255 255 255;
-  --font-theme: 'Play', sans-serif;
+  /* Fonds */
+  --cl-bg: 6 9 16; /* #060910 - fond de page */
+  --cl-surface: 12 16 24; /* #0c1018 - cartes */
+  --cl-nav: 8 13 21; /* #080d15 - barre de navigation */
+
+  /* Accents : le dégradé du titre va du violet au bleu */
+  --cl-violet: 139 79 255; /* #8b4fff */
+  --cl-indigo: 99 73 250; /* #6349fa */
+  --cl-blue: 76 130 255; /* #4c82ff */
+
+  /* Textes */
+  --cl-text: 255 255 255;
+  --cl-muted: 146 156 180; /* #929cb4 */
+
+  --cl-online: 34 197 94; /* pastille "disponible" */
 }
 
-/*
- * `inline` est important : il injecte la valeur directement dans les classes
- * utilitaires au lieu de figer la couleur au moment du build. Sans lui,
- * changer --cl-accent à l'exécution n'aurait aucun effet.
- */
 @theme inline {
-  --color-accent-50: color-mix(in srgb, rgb(var(--cl-accent)) 5%, white);
-  --color-accent-100: color-mix(in srgb, rgb(var(--cl-accent)) 10%, white);
-  --color-accent-200: color-mix(in srgb, rgb(var(--cl-accent)) 30%, white);
-  --color-accent-300: color-mix(in srgb, rgb(var(--cl-accent)) 50%, white);
-  --color-accent-400: color-mix(in srgb, rgb(var(--cl-accent)) 70%, white);
-  --color-accent-500: rgb(var(--cl-accent));
-  --color-accent-600: color-mix(in srgb, rgb(var(--cl-accent)), black 10%);
-  --color-accent-700: color-mix(in srgb, rgb(var(--cl-accent)), black 30%);
-  --color-accent-800: color-mix(in srgb, rgb(var(--cl-accent)), black 50%);
-  --color-accent-900: color-mix(in srgb, rgb(var(--cl-accent)), black 70%);
+  --color-bg: rgb(var(--cl-bg));
+  --color-surface: rgb(var(--cl-surface));
+  --color-nav: rgb(var(--cl-nav));
 
-  --color-background: rgb(var(--cl-background));
-  --color-card: rgb(var(--cl-card));
-  --color-t-primary: rgb(var(--cl-t-primary));
-  --color-t-accent: rgb(var(--cl-t-accent));
+  --color-violet: rgb(var(--cl-violet));
+  --color-indigo: rgb(var(--cl-indigo));
+  --color-blue: rgb(var(--cl-blue));
 
-  --font-sans: var(--font-theme);
+  --color-ink: rgb(var(--cl-text));
+  --color-muted: rgb(var(--cl-muted));
+  --color-online: rgb(var(--cl-online));
 
-  --animate-announcement-fade: announcement-fade 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes announcement-fade {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 body {
-  background-color: rgb(var(--cl-background));
-  font-family: var(--font-theme);
+  background-color: rgb(var(--cl-bg));
+  color: rgb(var(--cl-text));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Accessibilité : anneau de focus visible au clavier sur tout le site. */
+/*
+ * Le dégradé du titre. `background-clip: text` peint le dégradé À TRAVERS
+ * la forme des lettres ; le texte lui-même doit devenir transparent pour
+ * le laisser apparaître.
+ */
+.text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    rgb(var(--cl-violet)) 0%,
+    rgb(var(--cl-indigo)) 45%,
+    rgb(var(--cl-blue)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fond des boutons principaux : même dégradé, en aplat. */
+.bg-gradient-accent {
+  background-image: linear-gradient(
+    120deg,
+    rgb(var(--cl-indigo)) 0%,
+    rgb(var(--cl-blue)) 100%
+  );
+}
+
+/*
+ * Fondu des bords du visuel de bannière.
+ *
+ * L'image est un rectangle dont le fond est déjà celui de la page. Sans
+ * traitement, ses bords se voient comme une vignette collée. Le masque
+ * radial rend l'image progressivement transparente vers l'extérieur, ce qui
+ * la fait fondre dans la page — le halo violet, lui, est déjà dans l'image.
+ *
+ * `mask-image` découpe l'élément selon un dégradé : opaque là où le dégradé
+ * est noir, invisible là où il est transparent.
+ */
+.hero-media {
+  --fade: linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 11%, #000 88%, transparent 100%);
+
+  -webkit-mask-image: var(--fade);
+  mask-image: var(--fade);
+
+  /*
+   * Deux masques sont fournis : un horizontal, un vertical. `intersect` ne
+   * garde que la zone opaque dans LES DEUX — les quatre bords s'estompent
+   * donc, tandis que le centre reste parfaitement net.
+   */
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* Accessibilité : anneau de focus visible au clavier. */
 :focus-visible {
-  outline: 2px solid rgb(var(--cl-accent));
+  outline: 2px solid rgb(var(--cl-blue));
   outline-offset: 2px;
 }
 
-/* Respecte le réglage système « réduire les animations ». */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -82,21 +117,21 @@ body {
   }
 }
 
-/* Mise en forme du texte long (page Mentions légales). */
+/* Mise en forme du texte long (mentions légales). */
 .prose-theme h2 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
-  color: rgb(var(--cl-t-primary));
+  color: rgb(var(--cl-text));
 }
 
 .prose-theme p {
   margin-bottom: 0.75rem;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .prose-theme a {
-  color: rgb(var(--cl-accent));
+  color: rgb(var(--cl-blue));
   text-decoration: underline;
 }

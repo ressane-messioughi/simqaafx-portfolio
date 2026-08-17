@@ -1,65 +1,66 @@
 /**
  * Configuration globale du site.
  *
- * Équivalent du bloc "global" de settings.json dans le thème Nunjucks.
- * C'est LE fichier à modifier pour changer les couleurs, le menu, le pied de
- * page ou les annonces : aucun composant ne contient de valeur en dur.
+ * Un seul fichier à modifier pour changer la marque, le menu ou le pied de
+ * page. Aucun composant ne contient de texte en dur.
  */
 
 export const site = {
-  name: 'SimQaaFX',
-  description: 'Création de trailers FiveM et de vidéos RP sur mesure.',
-  logoUrl: '/logo.svg',
-  socials: {
-    discord: 'https://discord.com/invite/469J9SJMVK',
-    youtube: null,
-    instagram: null,
-    tiktok: null,
-    telegram: null,
-  },
+  name: 'SimOaaFX',
+  tagline: 'Créateur de contenus RP & éditeur vidéo.',
+  description:
+    'Créateur de contenus RP et éditeur vidéo. Découvrez mes réalisations à travers divers projets immersifs et créatifs.',
+  logoUrl: '/img/logo.png',
+  discordUrl: 'https://discord.com/invite/469J9SJMVK',
+  /** Disponibilité affichée sous la bannière. */
+  available: true,
+  availableLabel: 'Disponible pour de nouveaux projets',
 };
 
-/** Charte graphique — reprise à l'identique du thème d'origine. */
-export const theme = {
-  accentColor: '#6571ff',
-  backgroundColor: '#06060c',
-  cardColor: '#0b0b11',
-  textPrimaryColor: '#ffffff',
-  textAccentColor: '#ffffff',
-  font: 'Play',
-  /** Fond animé en particules (remplace particles.js). */
-  particles: true,
-};
-
-/** Bandeau d'annonces défilantes, en haut de page. */
-export const announcements = [
-  { text: '💥 MP moi @qass2brice', link: null, newTab: false },
-  { text: '⌛ Tu attends quoi pour avoir ton Trailer FIVEM ?', link: null, newTab: false },
-  { text: '⭐ Prix imbattables', link: null, newTab: false },
-];
-
-/** Menu de navigation. `shape` vaut 'regular' ou 'button'. */
+/**
+ * Menu principal.
+ *
+ * Les liens commençant par « # » sont des ancres : ils font défiler la page
+ * d'accueil jusqu'à la section correspondante, sans changer d'URL.
+ */
 export const navbar = {
-  showLogo: true,
-  showSiteName: false,
   links: [
-    { text: 'Accueil', link: '/', shape: 'regular' },
-    { text: 'FAQ', link: '/faq', shape: 'regular' },
-    { text: 'Avis', link: '/avis', shape: 'regular' },
+    { text: 'À Propos', link: '#a-propos' },
+    { text: 'Projets', link: '#projets' },
+    { text: 'Contact', link: '#contact' },
+  ],
+  cta: { text: 'Contactez-moi', link: '#contact' },
+};
+
+export const footer = {
+  description:
+    'Créateur de contenus RP passionné. Montages, teasers, présentations & bien plus encore.',
+  columns: [
     {
-      text: 'Discord',
-      link: 'https://discord.com/invite/469J9SJMVK',
-      shape: 'button',
-      newTab: true,
+      title: 'Navigation',
+      links: [
+        { text: 'À Propos', link: '#a-propos' },
+        { text: 'Projets', link: '#projets' },
+        { text: 'Vidéos', link: '#videos' },
+        { text: 'Contact', link: '#contact' },
+      ],
+    },
+    {
+      title: 'Outils',
+      links: [
+        { text: 'Premiere Pro', link: null },
+        { text: 'After Effects', link: null },
+        { text: 'Photoshop', link: null },
+        { text: 'CapCut', link: null },
+      ],
     },
   ],
-};
-
-/** Pied de page. */
-export const footer = {
-  showLogo: true,
-  showSiteName: true,
-  showSocials: true,
-  copyright: `Copyright © ${site.name} ${new Date().getFullYear()}`,
-  links: [{ text: 'Mentions légales', link: '/mentions-legales', newTab: false }],
+  socials: [
+    { network: 'youtube', url: null },
+    { network: 'twitter', url: null },
+    { network: 'instagram', url: null },
+    { network: 'mail', url: null },
+  ],
+  copyright: `© ${new Date().getFullYear()} SimOaaFX. Tous droits réservés.`,
+  signature: 'Fait avec passion',
 };

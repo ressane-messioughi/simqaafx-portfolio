@@ -1,46 +1,27 @@
 import PropTypes from 'prop-types';
 
 import Hero from './sections/Hero';
-import TextBlock from './sections/TextBlock';
-import TextMediaBlock from './sections/TextMediaBlock';
-import VideoGallery from './sections/VideoGallery';
-import ImageGallery from './sections/ImageGallery';
-import Features from './sections/Features';
-import Stats from './sections/Stats';
-import Faq from './sections/Faq';
-import Feedbacks from './sections/Feedbacks';
+import StatsBar from './sections/StatsBar';
+import ProjectGrid from './sections/ProjectGrid';
+import ShortGrid from './sections/ShortGrid';
+import Cta from './sections/Cta';
 
 /**
- * Le « registre » de sections : associe un type (une chaîne de caractères)
- * au composant React correspondant.
+ * Registre de sections : associe un type (chaîne de caractères) au composant
+ * React correspondant.
  *
- * C'est la traduction directe du tag Nunjucks `{% render_component %}`, qui
- * allait chercher components/<type>.njk sur le disque. Ici, l'objet joue le
- * rôle de l'annuaire.
- *
- * Pour ajouter un nouveau type de section : on crée le composant, on ajoute
- * une ligne ici, et il devient utilisable depuis src/data/pages.js.
+ * Pour ajouter un type : créer le composant, ajouter une ligne ici, puis
+ * l'utiliser depuis src/data/pages.js.
  */
 const SECTION_COMPONENTS = {
   hero: Hero,
-  'text-block': TextBlock,
-  'text-media-block': TextMediaBlock,
-  'video-gallery': VideoGallery,
-  'image-gallery': ImageGallery,
-  features: Features,
-  stats: Stats,
-  faq: Faq,
-  feedbacks: Feedbacks,
+  stats: StatsBar,
+  'project-grid': ProjectGrid,
+  'short-grid': ShortGrid,
+  cta: Cta,
 };
 
-/**
- * Affiche une liste de sections décrites sous forme de données.
- *
- * Équivalent de la boucle du thème d'origine :
- *   {% for componentId in components_order %}
- *     {% render_component componentId %}
- *   {% endfor %}
- */
+/** Affiche une liste de sections décrites sous forme de données. */
 function SectionRenderer({ sections }) {
   return (
     <>
@@ -48,8 +29,7 @@ function SectionRenderer({ sections }) {
         const Component = SECTION_COMPONENTS[section.type];
 
         // Type inconnu (faute de frappe dans pages.js) : on ne fait pas
-        // planter la page. On prévient dans la console en développement,
-        // et on n'affiche rien en production.
+        // planter la page, on prévient en développement seulement.
         if (!Component) {
           if (import.meta.env.DEV) {
             console.warn(

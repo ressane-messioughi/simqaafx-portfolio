@@ -1,122 +1,104 @@
 import { useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { navbar, site } from '../../data/settings';
+import Button from '../ui/Button';
 
 /**
- * Barre de navigation — transposition de components/navbar.njk.
+ * Barre de navigation fixée en haut de page.
  *
- * Deux simplifications par rapport à l'original :
+ * `sticky top-0` la maintient visible au défilement. `backdrop-blur` floute
+ * le contenu qui passe dessous : sans lui, le fond semi-transparent laisserait
+ * lire le texte au travers.
  *
- * 1. Le lien actif. Le thème testait `templateName` avec une longue cascade
- *    de {% if %}. React Router fournit <NavLink>, qui sait tout seul s'il
- *    pointe vers la page courante et expose un booléen `isActive`.
- *
- * 2. Le menu mobile. Alpine calculait la hauteur du menu en JavaScript
- *    (`$refs.menu.scrollHeight`) pour l'animer. On se contente d'afficher ou
- *    de masquer : moins de code, et le comportement au clavier reste correct.
+ * Les liens sont des ancres (#projets) : ce sont des <a> classiques, que le
+ * navigateur gère nativement. `scroll-smooth` sur <html> anime le défilement,
+ * et chaque section porte un `scroll-mt-24` pour ne pas finir cachée sous
+ * cette barre.
  */
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-
-  const linkClasses = (shape, isActive) => {
-    const base = 'px-4 py-2 whitespace-nowrap text-base font-medium';
-
-    if (shape === 'button') {
-      return `${base} text-t-primary border ${
-        isActive
-          ? 'bg-accent-700 border-accent-800 hover:bg-accent-800'
-          : 'bg-accent-500 border-accent-600 hover:bg-accent-600'
-      }`;
-    }
-
-    return `${base} ${isActive ? 'text-t-primary' : 'text-t-primary/80 hover:text-t-primary'}`;
-  };
-
-  const renderLink = (link) => {
-    const isExternal = link.link.startsWith('http');
-
-    if (isExternal) {
-      return (
-        <a
-          key={link.text}
-          href={link.link}
-          target={link.newTab ? '_blank' : undefined}
-          rel={link.newTab ? 'noopener noreferrer' : undefined}
-          className={linkClasses(link.shape, false)}
-          onClick={() => setIsOpen(false)}
-        >
-          {link.text}
-        </a>
-      );
-    }
-
-    return (
-      <NavLink
-        key={link.text}
-        to={link.link}
-        // `end` évite que "/" reste actif sur toutes les autres pages.
-        end={link.link === '/'}
-        className={({ isActive }) => linkClasses(link.shape, isActive)}
-        onClick={() => setIsOpen(false)}
-      >
-        {link.text}
-      </NavLink>
-    );
-  };
 
   return (
-    <nav className="bg-card/75 border border-white/5" aria-label="Navigation principale">
-      <div className="flex items-center justify-between flex-wrap w-full">
-        <div className="flex items-center p-4 lg:p-6">
-          <Link to="/" className="flex items-center justify-center gap-4 lg:justify-start">
-            {navbar.showLogo && (
-              <img src={site.logoUrl} alt={site.name} className="max-h-10" width="40" height="40" />
-            )}
-            {navbar.showSiteName && (
-              <span className="text-t-primary text-xl lg:text-2xl font-bold">{site.name}</span>
-            )}
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-nav/85 backdrop-blur-md">
+      <nav
+        className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 lg:px-8"
+        aria-label="Navigation principale"
+      >
+        <Link to="/" className="flex items-center gap-2.5">
+          <img src={site.logoUrl} alt="" className="size-8 object-contain" width="32" height="32" />
+          <span className="sr-only">{site.name}</span>
+        </Link>
+
+        {/* Menu ordinateur */}
+        <div className="hidden items-center gap-8 md:flex">
+          <ul className="flex items-center gap-8">
+            {navbar.links.map((link) => (
+              <li key={link.text}>
+                <a
+                  href={link.link}
+                  className="text-sm text-white/75 transition-colors duration-150 hover:text-white"
+                >
+                  {link.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <Button href={navbar.cta.link} variant="primary" className="!rounded-full !px-5 !py-2">
+            {navbar.cta.text}
+          </Button>
         </div>
 
-        <div className="flex items-center gap-4 mr-4 lg:hidden">
-          <button
-            type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-expanded={isOpen}
-            aria-controls="menu-principal"
-            aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
-            className="inline-flex items-center justify-center size-10 bg-card border border-white/5 text-t-primary/75 transition-all ease-in-out duration-150 hover:bg-accent-500/10 hover:text-accent-500 cursor-pointer"
-          >
-            <svg
-              className="size-4"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d={isOpen ? 'M1 1l15 12M16 1L1 13' : 'M1 1h15M1 7h15M1 13h15'}
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div
-          id="menu-principal"
-          key={location.pathname}
-          className={`w-full lg:w-auto lg:block ${isOpen ? 'block' : 'hidden'}`}
+        {/* Bouton hamburger, mobile uniquement */}
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
+          aria-controls="menu-mobile"
+          aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+          className="flex size-9 cursor-pointer items-center justify-center rounded-lg border border-white/10 text-white/80 transition-colors hover:bg-white/5 md:hidden"
         >
-          <div className="flex flex-col gap-2 p-2 lg:flex-row lg:items-center lg:gap-4 lg:p-6">
-            {navbar.links.map(renderLink)}
-          </div>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            aria-hidden="true"
+            className="size-4"
+          >
+            <path d={isOpen ? 'M5 5l14 14M19 5L5 19' : 'M3 6h18M3 12h18M3 18h18'} />
+          </svg>
+        </button>
+      </nav>
+
+      {/* Menu mobile déroulant */}
+      {isOpen && (
+        <div id="menu-mobile" className="border-t border-white/[0.06] px-5 py-4 md:hidden">
+          <ul className="flex flex-col gap-1">
+            {navbar.links.map((link) => (
+              <li key={link.text}>
+                <a
+                  href={link.link}
+                  onClick={() => setIsOpen(false)}
+                  className="block rounded-lg px-2 py-2.5 text-sm text-white/75 transition-colors hover:bg-white/5 hover:text-white"
+                >
+                  {link.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <Button
+            href={navbar.cta.link}
+            variant="primary"
+            className="mt-3 w-full !rounded-full"
+          >
+            {navbar.cta.text}
+          </Button>
         </div>
-      </div>
-    </nav>
+      )}
+    </header>
   );
 }
 

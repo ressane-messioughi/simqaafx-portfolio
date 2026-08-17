@@ -1,213 +1,108 @@
 /**
  * Contenu des pages.
  *
- * Chaque page est un simple tableau de "sections". Une section = un type +
- * ses propriétés. C'est la transposition directe de `components_order` +
- * `components` du thème Nunjucks : l'ordre du tableau est l'ordre d'affichage.
+ * Chaque page est décrite par un tableau de sections : une section = un type
+ * + ses propriétés, et l'ordre du tableau est l'ordre d'affichage. Réordonner
+ * une page ne demande de modifier aucun composant.
  *
- * Pour ajouter une section à l'accueil : ajoute un objet dans le tableau.
- * Aucun composant à modifier. Les types disponibles sont listés dans
- * src/components/SectionRenderer.jsx
+ * Les types disponibles sont listés dans src/components/SectionRenderer.jsx
+ * Les vidéos elles-mêmes vivent dans src/data/videos.js
  */
 
-/** Vidéos RP réalisées (27 vidéos). */
-const videosRp = [
-  'https://www.youtube.com/watch?v=jpvAmbf5_I4',
-  'https://www.youtube.com/shorts/AC4_KuyZHrk',
-  'https://www.youtube.com/shorts/8_RmcBggOrA',
-  'https://www.youtube.com/watch?v=hnU6qi2rAmg',
-  'https://www.youtube.com/shorts/r4N6YxE3tII',
-  'https://youtu.be/ggDtAd6uuPA',
-  'https://www.youtube.com/shorts/5HRRLRIyk5c',
-  'https://www.youtube.com/shorts/LVziW7BSk5g',
-  'https://www.youtube.com/shorts/KtD7uC4LCn4',
-  'https://www.youtube.com/shorts/F7aAlx-V5vM',
-  'https://www.youtube.com/shorts/_4etmxTMoBo',
-  'https://youtube.com/shorts/lvHnUF1yNPU?si=SojBhSIlKYTvtmww',
-  'https://www.youtube.com/shorts/LoF4wlkN7xc',
-  'https://youtu.be/hvWYICZB0_g',
-  'https://www.youtube.com/shorts/nDQ79xt7XhU',
-  'https://youtu.be/guMAmSR-l-A?si=37Z5fgtw2Qcun1j_',
-  'https://youtu.be/3AayvjK5F60?si=_Jzw9jPcdSg-gL9c',
-  'https://youtu.be/XV1YyIr6OSY?si=X2Lg0L_M1D5Ek4jl',
-  'https://www.youtube.com/watch?v=-oikxukbAFg',
-  'https://www.youtube.com/watch?v=qJODreU2TNI',
-  'https://www.youtube.com/watch?v=sBAPwD27fPg',
-  'https://www.youtube.com/watch?v=r9jgcNlknK8',
-  'https://www.youtube.com/watch?v=exaVB2MwI1Y',
-  'https://www.youtube.com/watch?v=65UHE85noJU',
-  'https://www.youtube.com/watch?v=VepqCGC9vYg',
-  'https://www.youtube.com/watch?v=XgjS0WrLjUs',
-  'https://www.youtube.com/watch?v=_cwErGPrB-k',
-].map((link) => ({ link, aspectRatio: '16/9' }));
+import { projects, shorts } from './videos';
 
-/** Vidéos IRL réalisées (3 vidéos). */
-const videosIrl = [
-  'https://youtu.be/adQ_8OE9hAU',
-  'https://www.youtube.com/shorts/4VXq8a0ef30',
-  'https://youtube.com/shorts/rBYJ0JDj4zg?feature=share',
-].map((link) => ({ link, aspectRatio: '16/9' }));
-
-/** Page d'accueil — même ordre de sections que le thème d'origine. */
+/** Page d'accueil. */
 export const homeSections = [
   {
     id: 'hero',
     type: 'hero',
     properties: {
-      title: 'Bienvenue sur SimQaaFX !',
-      // Ce fragment du titre sera mis en couleur d'accentuation.
-      titleAccent: 'SimQaaFX',
-      subtitle: 'Commande ton trailer FIVEM',
-      alignment: 'center',
-      height: 'short',
-      textWidth: 'medium',
-      buttons: [],
-    },
-  },
-  {
-    id: 'commandes',
-    type: 'text-block',
-    properties: {
-      title: null,
-      text: "Les commandes s'effectuent sur le Discord de VPictures :",
-      showBackground: true,
-      titleAlignment: 'center',
-      contentAlignment: 'center',
+      eyebrow: 'MON PORTFOLIO',
+      title: 'Bienvenue sur',
+      titleGradient: 'SimOaaFX !',
+      text: 'Créateur de contenus RP & éditeur vidéo. Découvrez mes réalisations à travers divers projets immersifs et créatifs.',
+      image: '/img/hero.png',
       buttons: [
-        {
-          text: 'Discord VPictures',
-          icon: 'fab fa-discord',
-          link: 'https://discord.gg/469J9SJMVK',
-          style: 'regular',
-          newTab: true,
-        },
+        { text: 'Voir mes projets', link: '#projets', style: 'primary' },
+        { text: 'Me contacter', link: '#contact', style: 'secondary' },
       ],
     },
   },
   {
-    id: 'videos-rp',
-    type: 'video-gallery',
+    id: 'stats',
+    type: 'stats',
     properties: {
-      title: 'Vidéos RP réalisées',
-      itemsPerRow: 3,
-      videos: videosRp,
-    },
-  },
-  {
-    id: 'videos-irl',
-    type: 'video-gallery',
-    properties: {
-      title: 'Vidéos IRL réalisées',
-      itemsPerRow: 2,
-      videos: videosIrl,
-    },
-  },
-  {
-    id: 'staff',
-    type: 'features',
-    properties: {
-      title: 'STAFF',
-      centered: true,
-      features: [
+      stats: [
+        // Chiffre calculé, pas saisi à la main : il reste juste
+        // quand on ajoute une vidéo au catalogue.
         {
-          title: 'FONDATEUR',
-          description: 'Qasss',
-          icon: 'fas fa-crown',
+          icon: 'video',
+          value: `+${projects.length + shorts.length}`,
+          label: 'Vidéos réalisées',
         },
+        { icon: 'calendar', value: '3+', label: "Années d'expérience" },
+        { icon: 'users', value: '100%', label: 'Passion' },
+        { icon: 'rocket', value: null, label: 'Projets uniques' },
       ],
+    },
+  },
+  {
+    id: 'projets',
+    type: 'project-grid',
+    properties: {
+      title: 'Projets Récents',
+      subtitle: 'Une sélection de mes dernières réalisations',
+      action: { text: 'Voir tous les projets', link: '/projets' },
+      // On n'affiche que les 9 premiers ici ; la page /projets montre tout.
+      projects: projects.slice(0, 9),
+    },
+  },
+  {
+    id: 'videos',
+    type: 'short-grid',
+    properties: {
+      title: 'Vidéos Courtes',
+      subtitle: 'Quelques extraits et formats courts',
+      action: { text: 'Voir toutes les vidéos', link: '/videos' },
+      shorts: shorts.slice(0, 3),
+    },
+  },
+  {
+    id: 'contact',
+    type: 'cta',
+    properties: {
+      title: 'Vous avez un projet en tête ?',
+      text: 'Je suis disponible pour collaborer sur vos projets RP, montages vidéo, teasers, présentations et plus encore.',
+      button: { text: 'Discutons-en', link: null },
     },
   },
 ];
 
-/** Page FAQ. */
-export const faqSections = [
+/** Page « Tous les projets ». */
+export const projectsSections = [
   {
-    id: 'faq',
-    type: 'faq',
+    id: 'tous-projets',
+    type: 'project-grid',
     properties: {
-      title: 'Questions fréquentes',
-      constrained: true,
+      title: 'Tous les projets',
+      subtitle: `${projects.length} réalisations : trailers, teasers et cinématiques`,
       isPageTitle: true,
-      items: [
-        {
-          question: 'Comment passer commande ?',
-          answer:
-            'Tout se passe sur le Discord de VPictures. Rejoins le serveur, ouvre un ticket et décris ton projet : durée souhaitée, ambiance, serveur RP concerné.',
-        },
-        {
-          question: 'Quels sont les délais de réalisation ?',
-          answer:
-            'Comptez en moyenne 3 à 7 jours pour un trailer, selon la charge en cours et la complexité du montage. Le délai exact est confirmé à la commande.',
-        },
-        {
-          question: 'Quels types de vidéos réalisez-vous ?',
-          answer:
-            'Principalement des trailers FiveM et des vidéos RP, mais aussi des formats IRL. Les formats courts (Shorts) comme longs sont possibles.',
-        },
-        {
-          question: 'Puis-je demander des modifications ?',
-          answer:
-            'Oui. Une phase de retours est prévue après la première version afin d’ajuster le montage, la musique ou le rythme.',
-        },
-        {
-          question: 'Quels sont les tarifs ?',
-          answer:
-            'Les tarifs dépendent de la durée et du travail de montage demandé. Un devis est communiqué sur Discord avant tout démarrage.',
-        },
-      ],
+      projects,
     },
   },
 ];
 
-/** Page Avis. */
-export const feedbackSections = [
+/** Page « Toutes les vidéos courtes ». */
+export const videosSections = [
   {
-    id: 'avis',
-    type: 'feedbacks',
+    id: 'toutes-videos',
+    type: 'short-grid',
     properties: {
-      title: 'Ils nous ont fait confiance',
+      title: 'Toutes les vidéos courtes',
+      subtitle: `${shorts.length} formats courts : TikTok RP et réalisations hors jeu`,
       isPageTitle: true,
-      feedbacks: [
-        {
-          id: 1,
-          author: 'Lucas',
-          rating: 5,
-          date: '2026-06-14',
-          message:
-            'Trailer livré rapidement et exactement dans l’ambiance que je voulais pour mon serveur. Le montage est propre, rien à redire.',
-          reply: 'Merci beaucoup Lucas, au plaisir de retravailler ensemble !',
-          repliedAt: '2026-06-15',
-        },
-        {
-          id: 2,
-          author: 'Maya',
-          rating: 5,
-          date: '2026-05-28',
-          message:
-            'Très bon contact sur Discord, à l’écoute des retours. Le rendu final dépasse ce que j’imaginais.',
-          reply: null,
-          repliedAt: null,
-        },
-        {
-          id: 3,
-          author: 'Théo',
-          rating: 4,
-          date: '2026-05-02',
-          message:
-            'Bon rapport qualité-prix. Quelques allers-retours nécessaires sur la musique, mais le résultat est au rendez-vous.',
-          reply: null,
-          repliedAt: null,
-        },
-        {
-          id: 4,
-          author: 'Sofiane',
-          rating: 5,
-          date: '2026-04-19',
-          message: 'Rapide, sérieux, et le short a très bien marché sur les réseaux. Je recommande.',
-          reply: 'Content que ça ait bien tourné, merci pour ta confiance !',
-          repliedAt: '2026-04-20',
-        },
-      ],
+      showCaptions: true,
+      shorts,
     },
   },
 ];

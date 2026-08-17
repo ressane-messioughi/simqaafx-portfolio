@@ -1,88 +1,70 @@
 import PropTypes from 'prop-types';
-import ThemeButtons from '../ui/ThemeButtons';
-import { splitOnAccent } from '../../utils/format';
+import Button from '../ui/Button';
+import { site } from '../../data/settings';
 
 /**
- * Bannière principale — transposition de components/hero.njk.
+ * Bannière d'accueil.
  *
- * Le thème d'origine construisait ses classes avec des `{% set %}` et des
- * dictionnaires Nunjucks. En React, ces dictionnaires deviennent de simples
- * objets JavaScript : le principe est identique, la syntaxe est juste
- * celle du langage.
+ * Mise en page en deux colonnes qui se replie en une seule sur mobile
+ * (`grid-cols-1 lg:grid-cols-2`). Sur petit écran, le visuel passe AVANT le
+ * texte dans l'ordre visuel via `order-first lg:order-last` — l'ordre du DOM,
+ * lui, garde le texte en premier, ce qui est le bon ordre de lecture pour un
+ * lecteur d'écran.
  */
 function Hero({ properties }) {
-  const {
-    title,
-    titleAccent,
-    subtitle,
-    alignment = 'center',
-    height = 'short',
-    textWidth = 'medium',
-    buttons = [],
-  } = properties;
-
-  const heightClasses = {
-    short: '',
-    medium: 'min-h-[60vh]',
-    tall: 'min-h-[calc(100vh-112px)]',
-  };
-
-  const layoutClasses = {
-    left: 'flex-col md:flex-row md:justify-between',
-    center: 'flex-col',
-    right: 'flex-col md:flex-row-reverse md:justify-between',
-  };
-
-  const widthClasses = {
-    small: 'max-w-md',
-    medium: 'max-w-xl',
-    large: 'max-w-3xl',
-    full: '',
-  };
-
-  const textAlignClasses = {
-    left: 'text-left',
-    center: 'mx-auto text-center',
-    right: 'text-right',
-  };
-
-  const buttonAlignClasses = {
-    left: 'justify-start',
-    center: 'justify-center',
-    right: 'justify-end',
-  };
-
-  const { before, highlighted, after } = splitOnAccent(title, titleAccent);
+  const { eyebrow, title, titleGradient, text, image, buttons = [] } = properties;
 
   return (
-    <section className="relative flex justify-center items-center py-24">
-      <div
-        className={`container relative flex gap-12 items-center px-4 ${heightClasses[height]} ${layoutClasses[alignment]}`}
-      >
-        <div
-          className={`flex flex-col gap-4 ${widthClasses[textWidth]} ${textAlignClasses[alignment]}`}
-        >
-          {title && (
-            // Un seul <h1> par page : c'est celui-ci. Toutes les autres
-            // sections utilisent <h2> via SectionTitle.
-            <h1 className="text-3xl font-bold text-t-primary mb-3 md:text-4xl lg:text-5xl">
-              {before}
-              {highlighted && <span className="text-accent-500">{highlighted}</span>}
-              {after}
-            </h1>
+    <section id="a-propos" className="relative scroll-mt-24 pt-10 lg:pt-16">
+      <div className="relative z-10 grid items-center gap-10 lg:grid-cols-2 lg:gap-8">
+        <div>
+          {eyebrow && (
+            <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-muted">{eyebrow}</p>
           )}
 
-          {subtitle && (
-            <p className="text-base text-t-primary/75 mb-3 md:text-lg">{subtitle}</p>
-          )}
+          <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">
+            {title}
+            <br />
+            <span className="text-gradient">{titleGradient}</span>
+          </h1>
+
+          <p className="mt-6 max-w-md text-base leading-relaxed text-muted">{text}</p>
 
           {buttons.length > 0 && (
-            <div
-              className={`flex flex-wrap items-center gap-4 mt-3 ${buttonAlignClasses[alignment]}`}
-            >
-              <ThemeButtons buttons={buttons} />
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              {buttons.map((button) => (
+                <Button
+                  key={button.text}
+                  href={button.link}
+                  variant={button.style === 'primary' ? 'primary' : 'secondary'}
+                >
+                  {button.text}
+                </Button>
+              ))}
             </div>
           )}
+
+          {site.available && (
+            <p className="mt-8 flex items-center gap-2.5 text-xs text-muted">
+              <span className="relative flex size-2">
+                {/* Double cercle : le premier pulse, le second reste net. */}
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-online opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-online" />
+              </span>
+              {site.availableLabel}
+            </p>
+          )}
+        </div>
+
+        <div className="order-first lg:order-last">
+          <img
+            src={image}
+            alt={`${site.name}, créateur de contenus RP et éditeur vidéo`}
+            className="hero-media mx-auto w-full max-w-md object-contain lg:max-w-none"
+            // La bannière est visible d'emblée : on demande au navigateur
+            // de la charger en priorité plutôt que de la différer.
+            fetchPriority="high"
+          />
         </div>
       </div>
     </section>
@@ -91,12 +73,11 @@ function Hero({ properties }) {
 
 Hero.propTypes = {
   properties: PropTypes.shape({
-    title: PropTypes.string,
-    titleAccent: PropTypes.string,
-    subtitle: PropTypes.string,
-    alignment: PropTypes.oneOf(['left', 'center', 'right']),
-    height: PropTypes.oneOf(['short', 'medium', 'tall']),
-    textWidth: PropTypes.oneOf(['small', 'medium', 'large', 'full']),
+    eyebrow: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    titleGradient: PropTypes.string,
+    text: PropTypes.string,
+    image: PropTypes.string,
     buttons: PropTypes.array,
   }).isRequired,
 };
