@@ -1,0 +1,23 @@
+# Dépendances
+node_modules/
+
+# Build de production
+# NOTE : dist/ est ignoré par défaut, car un dossier de build n'a normalement
+# pas sa place dans un dépôt Git (il se régénère avec `npm run build`).
+# Si tu déploies sur ton VPS en clonant le dépôt SANS y lancer npm, commente
+# la ligne ci-dessous pour versionner le build.
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Variables d'environnement
+.env
+.env.local
+.env.*.local
+
+# Éditeurs et système
+.vscode/
+.idea/
+.DS_Store
